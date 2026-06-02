@@ -127,15 +127,18 @@
   <main>
     <h1>Memory Agent Evaluation Report</h1>
     <p class="subtitle">A text-first research note on a 30-question productivity-memory benchmark across email, calendar, Slack, and cross-source reasoning.</p>
-    <p class="subtitle">Evaluation date: June 2, 2026. Published as an unlisted GitHub Pages artifact with crawler indexing disabled.</p>
+    <p class="subtitle">Evaluation date: June 2, 2026.</p>
 
     <section class="abstract">
       <h2>Abstract</h2>
-      <p>This report summarizes a live workspace benchmark comparing agent systems on operational memory tasks. The evaluation asked each system to answer 30 questions spanning email recall, email synthesis, calendar recall, calendar temporal reasoning, Slack recall, Slack synthesis, and cross-source fusion.</p>
-      <p>The main result is that retrieval completeness explains performance better than the presence of an external memory layer. Systems that paginated, accessed the relevant Slack surfaces, and anchored calendar time correctly outperformed systems that relied on shallow connector output or memory layers without complete current-state retrieval.</p>
+      <p>This report summarizes a live workspace benchmark comparing agent systems on operational memory tasks. The evaluation asked each system to answer the same 30-question suite spanning email recall, email synthesis, calendar recall, calendar temporal reasoning, Slack recall, Slack synthesis, and cross-source fusion.</p>
+      <p>The benchmark was designed to test whether an agent can retrieve current state, reason over time windows, identify negative or absent evidence, and combine signals across multiple productivity tools. The questions were intentionally practical rather than synthetic: each answer required the system to inspect live workspace data and produce a grounded response.</p>
+      <p>The main result is that retrieval completeness explains performance better than the presence of an external memory layer. Systems that paginated, accessed the relevant communication surfaces, and anchored calendar time correctly outperformed systems that relied on shallow connector output or memory layers without complete current-state retrieval.</p>
     </section>
 
     <h2>1. Executive Summary</h2>
+    <p>The evaluation compares six scored configurations or variants: Codex with code execution, Claude with Composio, Micro native, Hermes with Supermemory, OpenClaw with Composio CLI plus Hindsight, and a projected Micro native variant assuming complete Slack coverage. All observed scores are based on the adjudicated transcript, with partial credit reserved for answers that were directionally useful but incomplete.</p>
+    <p>The question set intentionally mixed easy recall with harder operational-memory tasks. Early questions ask for direct facts such as newest email, sent email, next meeting, and last Slack message. Later questions require synthesis: identifying open reply loops, aggregating senders over a time window, finding recurring meetings, separating bot mentions from human asks, and linking calendar events back to email or Slack context.</p>
     <p><strong>Top observed system:</strong> Codex with code execution, scoring 26/30 in 22 minutes 20 seconds.</p>
     <p><strong>Fastest observed system:</strong> Micro native, scoring 21/30 in less than 5 minutes.</p>
     <p><strong>Best projected system:</strong> Micro native with complete Slack coverage, estimated at 28/30 in less than 5 minutes.</p>
@@ -212,13 +215,16 @@
     </table>
 
     <h2>2. Method</h2>
-    <p>The benchmark contains 30 practical questions. Each question targets a concrete memory dimension and requires verifiable ground truth from live workspace data. The grading labels are:</p>
+    <p>The benchmark contains 30 practical questions. Each question targets a concrete memory dimension and requires verifiable ground truth from live workspace data. The same prompt suite was reused across systems so that differences in score primarily reflect retrieval behavior, connector coverage, tool execution strategy, and answer calibration.</p>
+    <p>The test covers four data domains: email, calendar, Slack, and cross-source fusion. Within those domains, it stresses five recurring skills: single-hop recall, multi-hop synthesis, temporal reasoning, negative or absence detection, and cross-source linking. This matters because productivity-memory agents often fail not on isolated recall, but on knowing whether the retrieved window is complete enough to support a confident answer.</p>
+    <p>The grading labels are:</p>
     <ul>
       <li><span class="pass">Pass</span>: answer is correct and supported by the available ground truth.</li>
       <li><span class="partial">Partial</span>: answer is directionally useful but incomplete, ambiguous, or dependent on an unexhausted retrieval window.</li>
       <li><span class="fail">Fail</span>: answer is incorrect, missing, or based on insufficient data treated as complete.</li>
     </ul>
     <p class="note">The score totals are the adjudicated totals from the source transcript. Some dimension summaries are shorthand diagnostic slices and should be read as qualitative breakdowns, not as independently recomputed totals.</p>
+    <p>The evaluation also records runtime where available. Runtime is important because exhaustive retrieval can improve accuracy while making a system impractical for everyday assistant use. The report therefore treats score and latency together rather than evaluating accuracy alone.</p>
 
     <h2>3. Dimension-Level Performance</h2>
     <table>
@@ -466,19 +472,6 @@
       <li><strong>Latency matters.</strong> Codex scored highest observed accuracy but took more than four times as long as Micro.</li>
     </ol>
 
-    <h2>7. Recommended Product Changes</h2>
-    <ol>
-      <li>Add complete Slack DM/private-channel retrieval where permissions allow it.</li>
-      <li>Expose count endpoints or page-to-completion helpers for exact email questions.</li>
-      <li>Make retrieval coverage visible in every answer: pages read, total available, and whether `hasMore` remained true.</li>
-      <li>Require explicit date-window anchoring before answering "today", "next", "earlier", or "this week".</li>
-      <li>Separate bot mentions from human mentions in Slack tools.</li>
-      <li>Prefer native domain APIs for fast, complete state retrieval over generic connector abstractions when the use case is operational memory.</li>
-    </ol>
-
-    <h2>8. Conclusion</h2>
-    <p>The benchmark supports a simple conclusion: the best memory agents are not the ones with the fanciest memory layer; they are the ones that reliably retrieve complete, current, source-grounded state before reasoning. In this test, code execution won by paginating deeply, Claude performed well through broad connectors, Micro was fastest but Slack-capped, and the memory-augmented stacks underperformed because retrieval was incomplete or flaky.</p>
-    <p class="note small">This page is intentionally unlisted. It is public to anyone with the URL, but it is not linked from the root page and includes crawler blocking directives.</p>
   </main>
 </body>
 </html>
