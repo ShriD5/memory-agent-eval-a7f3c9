@@ -274,14 +274,13 @@
     </table>
 
     <h2>4. The 30 Evaluation Questions</h2>
-    <p>This section lists the exact question intent, the memory skill being tested, and the common performance pattern observed across systems.</p>
+    <p>This section lists the exact question intent and the memory skill being tested.</p>
     <table>
       <thead>
         <tr>
           <th>#</th>
           <th>Question</th>
           <th>Tested capability</th>
-          <th>Observed performance pattern</th>
         </tr>
       </thead>
       <tbody>
@@ -289,181 +288,151 @@
           <td class="num">1</td>
           <td>What was the subject and sender of the most recent email received today?</td>
           <td>Email single-hop recall; newest ordering.</td>
-          <td>Most systems could identify the Product Hunt automation email from Team Micro. Shallow windows still performed acceptably because the target was recent.</td>
         </tr>
         <tr>
           <td class="num">2</td>
           <td>Who sent the last invoice or payment-confirmation email, and for what amount?</td>
           <td>Email search plus semantic distinction between invoice, confirmation, and reminder.</td>
-          <td>Fireflies.ai / Stripe at $5.00 was the key target. Some systems over- or under-interpreted payment reminders as confirmations.</td>
         </tr>
         <tr>
           <td class="num">3</td>
           <td>What is the most recent email actually sent by the user, and who was it sent to?</td>
           <td>Sent-mail retrieval and exclusion of system-generated mail.</td>
-          <td>The correct target was the May 15 "URGENT: Pigeons Are Stealing Our Bandwidth" email to dev@micro.so. Systems with poor sent-mail filtering produced partial answers.</td>
         </tr>
         <tr>
           <td class="num">4</td>
           <td>Find the oldest unread email still in the inbox.</td>
           <td>Pagination-to-completion and oldest-item ordering.</td>
-          <td>This was a major separator. Codex paginated deeply. Other systems stopped early and reported only the oldest item in their visible window.</td>
         </tr>
         <tr>
           <td class="num">5</td>
           <td>How many unread emails are currently in the inbox?</td>
           <td>Exact count retrieval.</td>
-          <td>Exact counts were difficult without a count endpoint. Several systems treated page size or sample size as the total.</td>
         </tr>
         <tr>
           <td class="num">6</td>
           <td>Summarize the back-and-forth in the most recent email thread with more than two messages.</td>
           <td>Thread reading and multi-message synthesis.</td>
-          <td>Systems with full thread retrieval passed or partially passed. Shallow systems could only infer that a thread existed.</td>
         </tr>
         <tr>
           <td class="num">7</td>
           <td>Across all emails this week, who is the user waiting on a reply from?</td>
           <td>Conversation-state analysis and negative detection.</td>
-          <td>Strong systems recognized that there were no user-sent emails this week or identified the open support thread nuance.</td>
         </tr>
         <tr>
           <td class="num">8</td>
           <td>Which sender emailed the user the most over the last 7 days?</td>
           <td>Sender aggregation over a time window.</td>
-          <td>Team Micro and AWS Notifications were the main contenders. Differences came from sample windows and whether the system paginated.</td>
         </tr>
         <tr>
           <td class="num">9</td>
           <td>Did the user ever reply to the last email from a recurring contact?</td>
           <td>Recurring-contact selection and reply-state detection.</td>
-          <td>This exposed whether a system could distinguish a real recurring human contact from automation senders.</td>
         </tr>
         <tr>
           <td class="num">10</td>
           <td>List every distinct automated or system-notification topic received today.</td>
           <td>Topic clustering across many emails.</td>
-          <td>Strong systems found 10-12 categories. Shallow systems listed only the Product Hunt messages they saw.</td>
         </tr>
         <tr>
           <td class="num">11</td>
           <td>What is the next meeting, when does it start, and who organized it?</td>
           <td>Calendar recall and time anchoring.</td>
-          <td>The key target was the same-day 9 PM standup organized by Brett. Hermes missed it and selected a future PR reviews block.</td>
         </tr>
         <tr>
           <td class="num">12</td>
           <td>Who are the attendees on the next standup?</td>
           <td>Calendar attendee extraction.</td>
-          <td>Systems that found the standup generally answered correctly. Missing the standup caused a hard failure.</td>
         </tr>
         <tr>
           <td class="num">13</td>
           <td>What meetings happened earlier today, and which had no summary or recording?</td>
           <td>Past-event filtering and metadata inspection.</td>
-          <td>The PR reviews block at 00:45-01:45 was the key earlier event. Several systems missed it.</td>
         </tr>
         <tr>
           <td class="num">14</td>
           <td>What was the title of the last meeting attended that was organized by someone else?</td>
           <td>Organizer filtering over past meetings.</td>
-          <td>The previous standup organized by Brett was the key answer. Systems that only saw self-organized blocks failed.</td>
         </tr>
         <tr>
           <td class="num">15</td>
           <td>Are there meetings with a video link in the next 24 hours?</td>
           <td>Meeting-link detection.</td>
-          <td>The standup had a Google Meet link. Missing the standup caused the wrong conclusion.</td>
         </tr>
         <tr>
           <td class="num">16</td>
           <td>How much total meeting time is scheduled today?</td>
           <td>Duration summation.</td>
-          <td>The adjudicated target was 1.5 hours. Errors came from missing events or inflating standup duration.</td>
         </tr>
         <tr>
           <td class="num">17</td>
           <td>What is the gap between the last meeting that ended and the next meeting that starts?</td>
           <td>Temporal arithmetic.</td>
-          <td>The correct gap was 19 hours 15 minutes. Systems without the same-day anchor produced confused or missing answers.</td>
         </tr>
         <tr>
           <td class="num">18</td>
           <td>Which recurring meeting appears most often, and who usually organizes it?</td>
           <td>Recurrence detection.</td>
-          <td>There was nuance between PR reviews overall and standup as the recurring team meeting. This produced partials.</td>
         </tr>
         <tr>
           <td class="num">19</td>
           <td>Are there scheduling conflicts this week?</td>
           <td>Overlap detection.</td>
-          <td>Most systems correctly found no direct overlaps.</td>
         </tr>
         <tr>
           <td class="num">20</td>
           <td>What was the last Slack message sent, and in which channel or DM?</td>
           <td>Slack latest-message retrieval.</td>
-          <td>Systems with DM access found Dev DMs; public-only systems saw public channel messages instead.</td>
         </tr>
         <tr>
           <td class="num">21</td>
           <td>What is the most recent thread where the user was mentioned?</td>
           <td>Mention search and bot-noise filtering.</td>
-          <td>Strong answers distinguished automated deploy-bot mentions from human mentions by Brett.</td>
         </tr>
         <tr>
           <td class="num">22</td>
           <td>Which Slack channel or conversation has been most active recently?</td>
           <td>Slack activity aggregation.</td>
-          <td>DM with Dev was important by volume. Public-only systems leaned toward #data-and-ai or #alerts-eng.</td>
         </tr>
         <tr>
           <td class="num">23</td>
           <td>Summarize the latest message in the most active Slack conversation.</td>
           <td>Short-context Slack synthesis.</td>
-          <td>Good answers captured the X/OAuth preview-test thread. Shallow answers gave vague short-message summaries.</td>
         </tr>
         <tr>
           <td class="num">24</td>
           <td>Is any Slack message waiting on a response from the user?</td>
           <td>Open-loop detection.</td>
-          <td>Brett's benchmark request and bug threads were the key open asks. Public-only retrieval or shallow context missed them.</td>
         </tr>
         <tr>
           <td class="num">25</td>
           <td>Across Slack, what is the most recent decision or action item directed at the user?</td>
           <td>Action-item extraction.</td>
-          <td>The strongest answer identified Brett assigning the benchmark run across systems.</td>
         </tr>
         <tr>
           <td class="num">26</td>
           <td>Who was the most recent DM with, and what was the gist?</td>
           <td>DM access and summarization.</td>
-          <td>Systems with DM access found Dev and the X/OAuth verification context. Public-only systems failed.</td>
         </tr>
         <tr>
           <td class="num">27</td>
           <td>For the next meeting, is there any related email or Slack discussion to review?</td>
           <td>Meeting-centered cross-source retrieval.</td>
-          <td>Correct answers linked the standup to prior notes and Brett's active Slack asks. Wrong calendar anchoring caused failures.</td>
         </tr>
         <tr>
           <td class="num">28</td>
           <td>Did anyone email and Slack about the same topic in the last week?</td>
           <td>Cross-channel topic matching.</td>
-          <td>Memory/agent eval and standup topics were plausible links. Systems often picked email-only Product Hunt topics.</td>
         </tr>
         <tr>
           <td class="num">29</td>
           <td>Across email, calendar, and Slack, what are the top three things needing attention today?</td>
           <td>Priority synthesis.</td>
-          <td>Strong answers included standup prep, Brett's benchmark/action items, X/OAuth verification, and API/automation issues.</td>
         </tr>
         <tr>
           <td class="num">30</td>
           <td>Is there a calendar meeting that was scheduled or confirmed via email or Slack? Link the two.</td>
           <td>Entity linking across calendar and communications.</td>
-          <td>The 1-1 with Naveen and its email invitation were the clean target. Several systems missed it.</td>
         </tr>
       </tbody>
     </table>
