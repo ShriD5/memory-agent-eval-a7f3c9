@@ -5,863 +5,511 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="robots" content="noindex,nofollow,noarchive,nosnippet">
   <meta name="googlebot" content="noindex,nofollow,noarchive,nosnippet">
-  <title>Retrieval Completeness Beats Memory Layers</title>
+  <title>Memory Agent Evaluation Report</title>
   <style>
-    :root {
-      color-scheme: light dark;
-      --bg: #f7f5ef;
-      --paper: #fffdf7;
-      --ink: #15130f;
-      --muted: #625f57;
-      --line: #d8d1c2;
-      --accent: #284b63;
-      --accent-2: #8a5a44;
-      --pass: #2f6f4e;
-      --partial: #b7791f;
-      --fail: #9b2c2c;
-      --grid: #e8e1d1;
-      --shadow: 0 18px 60px rgba(32, 28, 19, 0.12);
-    }
-
-    @media (prefers-color-scheme: dark) {
-      :root {
-        --bg: #11100d;
-        --paper: #1b1915;
-        --ink: #f0eadc;
-        --muted: #bdb4a3;
-        --line: #3b362c;
-        --accent: #91c8e4;
-        --accent-2: #d7a17f;
-        --pass: #7cc29a;
-        --partial: #e3b35d;
-        --fail: #e27f7f;
-        --grid: #302c24;
-        --shadow: 0 18px 60px rgba(0, 0, 0, 0.35);
-      }
-    }
-
-    * {
-      box-sizing: border-box;
-    }
-
     body {
       margin: 0;
-      background: radial-gradient(circle at top left, rgba(40, 75, 99, 0.14), transparent 34rem), var(--bg);
-      color: var(--ink);
-      font-family: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
-      line-height: 1.62;
+      background: #fafafa;
+      color: #111;
+      font-family: Georgia, "Times New Roman", serif;
+      line-height: 1.6;
     }
 
     main {
-      width: min(1120px, calc(100% - 32px));
-      margin: 32px auto 80px;
-      background: var(--paper);
-      border: 1px solid var(--line);
-      border-radius: 28px;
-      box-shadow: var(--shadow);
-      overflow: hidden;
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 48px 24px 80px;
+      background: #fff;
     }
 
-    header {
-      padding: 72px clamp(24px, 7vw, 92px) 48px;
-      border-bottom: 1px solid var(--line);
-      background:
-        linear-gradient(135deg, rgba(40, 75, 99, 0.14), transparent 44%),
-        linear-gradient(315deg, rgba(138, 90, 68, 0.12), transparent 40%);
-    }
-
-    .kicker {
-      margin: 0 0 18px;
-      color: var(--accent-2);
-      font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      font-size: 0.78rem;
-      font-weight: 700;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
+    h1,
+    h2,
+    h3 {
+      line-height: 1.2;
     }
 
     h1 {
-      max-width: 950px;
-      margin: 0;
-      font-size: clamp(2.6rem, 7vw, 5.9rem);
-      line-height: 0.94;
-      letter-spacing: -0.06em;
-    }
-
-    .subtitle {
-      max-width: 760px;
-      margin: 26px 0 0;
-      color: var(--muted);
-      font-size: clamp(1.05rem, 2vw, 1.32rem);
-    }
-
-    .meta {
-      display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 12px;
-      margin-top: 36px;
-      font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    }
-
-    .meta div {
-      padding: 16px;
-      border: 1px solid var(--line);
-      border-radius: 18px;
-      background: color-mix(in srgb, var(--paper) 72%, transparent);
-    }
-
-    .meta strong {
-      display: block;
-      font-size: 1.15rem;
-    }
-
-    .meta span {
-      color: var(--muted);
-      font-size: 0.82rem;
-    }
-
-    section {
-      padding: 44px clamp(20px, 6vw, 78px);
-      border-bottom: 1px solid var(--line);
-    }
-
-    section:last-child {
-      border-bottom: 0;
+      margin: 0 0 12px;
+      font-size: 2.6rem;
     }
 
     h2 {
-      margin: 0 0 14px;
-      font-size: clamp(1.65rem, 3vw, 2.65rem);
-      line-height: 1.08;
-      letter-spacing: -0.04em;
+      margin-top: 44px;
+      padding-top: 18px;
+      border-top: 1px solid #ddd;
+      font-size: 1.65rem;
     }
 
     h3 {
-      margin: 30px 0 10px;
-      font-size: 1.22rem;
-      line-height: 1.25;
-      letter-spacing: -0.02em;
+      margin-top: 28px;
+      font-size: 1.15rem;
     }
 
     p {
-      max-width: 850px;
-      margin: 0 0 16px;
+      margin: 0 0 14px;
+    }
+
+    .subtitle,
+    .note {
+      color: #555;
     }
 
     .abstract {
-      display: grid;
-      grid-template-columns: 1.2fr 0.8fr;
-      gap: 28px;
-      align-items: start;
-    }
-
-    .claim {
-      padding: 24px;
-      border: 1px solid var(--line);
-      border-radius: 22px;
-      background: color-mix(in srgb, var(--accent) 9%, var(--paper));
-      font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    }
-
-    .claim strong {
-      display: block;
-      margin-bottom: 6px;
-      color: var(--accent);
-      font-size: 0.85rem;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-    }
-
-    .chart-grid {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 18px;
-      margin-top: 28px;
-    }
-
-    figure {
-      margin: 0;
-      padding: 18px;
-      border: 1px solid var(--line);
-      border-radius: 22px;
-      background: color-mix(in srgb, var(--paper) 88%, var(--bg));
-    }
-
-    figure.full {
-      grid-column: 1 / -1;
-    }
-
-    figcaption {
-      margin-top: 10px;
-      color: var(--muted);
-      font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      font-size: 0.82rem;
-    }
-
-    svg {
-      width: 100%;
-      height: auto;
-      display: block;
-      overflow: visible;
-      font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    }
-
-    .table-wrap {
-      overflow-x: auto;
-      margin-top: 22px;
-      border: 1px solid var(--line);
-      border-radius: 18px;
+      margin: 28px 0;
+      padding: 18px 20px;
+      border: 1px solid #ddd;
+      background: #f7f7f7;
     }
 
     table {
       width: 100%;
+      margin: 18px 0 26px;
       border-collapse: collapse;
-      font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-family: Arial, Helvetica, sans-serif;
       font-size: 0.92rem;
     }
 
     th,
     td {
-      padding: 12px 14px;
-      border-bottom: 1px solid var(--line);
+      padding: 9px 10px;
+      border: 1px solid #ddd;
       text-align: left;
       vertical-align: top;
     }
 
     th {
-      background: color-mix(in srgb, var(--accent) 10%, var(--paper));
-      color: var(--accent);
-      font-size: 0.76rem;
-      letter-spacing: 0.07em;
-      text-transform: uppercase;
-      white-space: nowrap;
-    }
-
-    tr:last-child td {
-      border-bottom: 0;
-    }
-
-    .num {
-      font-variant-numeric: tabular-nums;
-      white-space: nowrap;
-    }
-
-    .pill {
-      display: inline-block;
-      padding: 3px 8px;
-      border-radius: 999px;
-      font-size: 0.78rem;
+      background: #f1f1f1;
       font-weight: 700;
     }
 
-    .pill.pass {
-      background: color-mix(in srgb, var(--pass) 18%, transparent);
-      color: var(--pass);
-    }
-
-    .pill.partial {
-      background: color-mix(in srgb, var(--partial) 18%, transparent);
-      color: var(--partial);
-    }
-
-    .pill.fail {
-      background: color-mix(in srgb, var(--fail) 18%, transparent);
-      color: var(--fail);
-    }
-
-    .two-col {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 26px;
-      margin-top: 20px;
-    }
-
-    ul,
-    ol {
-      max-width: 840px;
-      padding-left: 22px;
-    }
-
-    li {
-      margin: 8px 0;
-    }
-
-    blockquote {
-      margin: 28px 0;
-      padding: 22px 26px;
-      border-left: 4px solid var(--accent);
-      background: color-mix(in srgb, var(--accent) 8%, var(--paper));
-      font-size: 1.18rem;
-      line-height: 1.45;
-    }
-
     code {
-      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+      font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
       font-size: 0.92em;
-      color: var(--accent-2);
     }
 
-    .footnote {
-      color: var(--muted);
-      font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      font-size: 0.85rem;
+    .num {
+      white-space: nowrap;
+      font-variant-numeric: tabular-nums;
     }
 
-    @media (max-width: 860px) {
-      .meta,
-      .abstract,
-      .chart-grid,
-      .two-col {
-        grid-template-columns: 1fr;
+    .pass {
+      color: #17633a;
+      font-weight: 700;
+    }
+
+    .partial {
+      color: #8a5a00;
+      font-weight: 700;
+    }
+
+    .fail {
+      color: #8a1f1f;
+      font-weight: 700;
+    }
+
+    .small {
+      font-size: 0.88rem;
+    }
+
+    @media print {
+      body {
+        background: #fff;
       }
 
-      header {
-        padding-top: 48px;
+      main {
+        max-width: none;
+        padding: 24px;
       }
     }
   </style>
 </head>
 <body>
   <main>
-    <header>
-      <p class="kicker">Private unlisted research note · Memory-agent benchmark</p>
-      <h1>Retrieval Completeness Beats Memory Layers</h1>
-      <p class="subtitle">A comparative field evaluation of six productivity-memory agent configurations across email, calendar, Slack, and cross-source fusion tasks.</p>
-      <div class="meta" aria-label="paper metadata">
-        <div><strong>30</strong><span>evaluation questions</span></div>
-        <div><strong>4</strong><span>workspace data domains</span></div>
-        <div><strong>6</strong><span>systems or variants compared</span></div>
-        <div><strong>Jun 2, 2026</strong><span>source evaluation date</span></div>
-      </div>
-    </header>
+    <h1>Memory Agent Evaluation Report</h1>
+    <p class="subtitle">A text-first research note on a 30-question productivity-memory benchmark across email, calendar, Slack, and cross-source reasoning.</p>
+    <p class="subtitle">Evaluation date: June 2, 2026. Published as an unlisted GitHub Pages artifact with crawler indexing disabled.</p>
 
-    <section id="abstract">
-      <div class="abstract">
-        <div>
-          <h2>Abstract</h2>
-          <p>This report studies a 30-question memory benchmark run against a live productivity workspace. The benchmark tested whether agents could recover facts and synthesize state across Gmail-like email, calendar events, Slack messages, and cross-source links. Systems differed less in language-model reasoning than in retrieval access, pagination behavior, and connector reliability.</p>
-          <p>The highest observed score was Codex with code execution at 26/30, followed by Claude with Composio at 23/30, Micro native at 21/30, Hermes with Supermemory at 13/30, and OpenClaw with Composio CLI plus Hindsight at 12/30. A projected Micro variant with complete Slack coverage would score approximately 28/30.</p>
-        </div>
-        <aside class="claim">
-          <strong>Main finding</strong>
-          Retrieval completeness dominated model sophistication. Memory layers underperformed when connectors returned shallow windows, missed calendar state, or failed under rate limits.
-        </aside>
-      </div>
+    <section class="abstract">
+      <h2>Abstract</h2>
+      <p>This report summarizes a live workspace benchmark comparing agent systems on operational memory tasks. The evaluation asked each system to answer 30 questions spanning email recall, email synthesis, calendar recall, calendar temporal reasoning, Slack recall, Slack synthesis, and cross-source fusion.</p>
+      <p>The main result is that retrieval completeness explains performance better than the presence of an external memory layer. Systems that paginated, accessed the relevant Slack surfaces, and anchored calendar time correctly outperformed systems that relied on shallow connector output or memory layers without complete current-state retrieval.</p>
     </section>
 
-    <section id="methods">
-      <h2>1. Evaluation Design</h2>
-      <p>The benchmark consists of thirty questions grouped into seven dimensions. The tasks are intentionally operational: a correct answer requires reading live tool output, interpreting temporal relationships, and linking information across tools.</p>
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>Dimension</th>
-              <th>Question range</th>
-              <th>Capability tested</th>
-              <th>Failure pressure</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>Email single-hop</td>
-              <td class="num">Q1-Q5</td>
-              <td>Direct fact recall from inbox and sent mail.</td>
-              <td>Pagination, exact counts, oldest/newest ordering.</td>
-            </tr>
-            <tr>
-              <td>Email multi-hop</td>
-              <td class="num">Q6-Q10</td>
-              <td>Thread reading, reply-state detection, sender frequency, notification clustering.</td>
-              <td>Conversation state and thread-depth retrieval.</td>
-            </tr>
-            <tr>
-              <td>Calendar recall</td>
-              <td class="num">Q11-Q15</td>
-              <td>Meeting lookup, attendees, organizers, summaries, video links.</td>
-              <td>Timezone and next-event filtering.</td>
-            </tr>
-            <tr>
-              <td>Calendar temporal</td>
-              <td class="num">Q16-Q19</td>
-              <td>Duration sums, gap calculation, recurrence, conflict detection.</td>
-              <td>Reasoning over start and end times.</td>
-            </tr>
-            <tr>
-              <td>Slack recall</td>
-              <td class="num">Q20-Q23</td>
-              <td>Latest messages, mentions, active channels, thread summaries.</td>
-              <td>DM/private-channel access and bot-noise filtering.</td>
-            </tr>
-            <tr>
-              <td>Slack synthesis</td>
-              <td class="num">Q24-Q26</td>
-              <td>Open asks, directed action items, most recent DM gist.</td>
-              <td>Determining whether a message needs response.</td>
-            </tr>
-            <tr>
-              <td>Cross-source fusion</td>
-              <td class="num">Q27-Q30</td>
-              <td>Connecting calendar events to email/Slack and ranking priorities.</td>
-              <td>Entity resolution across tools.</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-      <p class="footnote">Scoring used the adjudicated transcript labels: pass, partial, and fail. Aggregate scores below are the final adjudicated scores from the source transcript; dimension summaries are used as diagnostic slices and may be rounded shorthand.</p>
-    </section>
+    <h2>1. Executive Summary</h2>
+    <p><strong>Top observed system:</strong> Codex with code execution, scoring 26/30 in 22 minutes 20 seconds.</p>
+    <p><strong>Fastest observed system:</strong> Micro native, scoring 21/30 in less than 5 minutes.</p>
+    <p><strong>Best projected system:</strong> Micro native with complete Slack coverage, estimated at 28/30 in less than 5 minutes.</p>
+    <p><strong>Core finding:</strong> memory layers did not compensate for incomplete retrieval. Hermes plus Supermemory and OpenClaw plus Hindsight scored near the bottom because they missed live calendar state, DMs, pagination depth, or complete inbox coverage.</p>
 
-    <section id="results">
-      <h2>2. Results</h2>
-      <p>Codex achieved the highest observed score, but required the longest runtime. Micro was the fastest observed system and was competitive outside Slack; the projected Micro variant estimates performance if the Slack DM/private-channel retrieval gap were closed.</p>
-      <div class="chart-grid">
-        <figure>
-          <svg id="scoreChart" viewBox="0 0 720 430" role="img" aria-label="Overall score bar chart"></svg>
-          <figcaption>Figure 1. Overall adjudicated score out of 30. Micro projected represents the same native system assuming complete Slack coverage.</figcaption>
-        </figure>
-        <figure>
-          <svg id="runtimeChart" viewBox="0 0 720 430" role="img" aria-label="Runtime comparison chart"></svg>
-          <figcaption>Figure 2. Observed runtime in minutes. Micro is plotted at the conservative upper bound of 5 minutes.</figcaption>
-        </figure>
-        <figure class="full">
-          <svg id="frontierChart" viewBox="0 0 980 500" role="img" aria-label="Accuracy versus runtime frontier"></svg>
-          <figcaption>Figure 3. Accuracy-speed frontier. Better systems move up and left. OpenClaw runtime was not reported and is excluded from the scatter plot.</figcaption>
-        </figure>
-        <figure class="full">
-          <svg id="dimensionChart" viewBox="0 0 1040 560" role="img" aria-label="Dimension performance chart"></svg>
-          <figcaption>Figure 4. Diagnostic dimension profile using the final transcript's pass/partial/fail summaries. Partial credit is shown as a separate color to distinguish incompleteness from hard failure.</figcaption>
-        </figure>
-      </div>
+    <table>
+      <thead>
+        <tr>
+          <th>Rank</th>
+          <th>System</th>
+          <th>Stack / retrieval mode</th>
+          <th>Score</th>
+          <th>Rate</th>
+          <th>Runtime</th>
+          <th>Main interpretation</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="num">1 projected</td>
+          <td>Micro projected</td>
+          <td>Native tools plus complete Slack access</td>
+          <td class="num">28/30</td>
+          <td class="num">93%</td>
+          <td class="num">&lt; 5m</td>
+          <td>Projection if the Slack DM/private-channel gap is closed.</td>
+        </tr>
+        <tr>
+          <td class="num">1 observed</td>
+          <td>Codex</td>
+          <td>Code execution</td>
+          <td class="num">26/30</td>
+          <td class="num">87%</td>
+          <td class="num">22m 20s</td>
+          <td>Won through deeper retrieval and pagination, but slow.</td>
+        </tr>
+        <tr>
+          <td class="num">2 observed</td>
+          <td>Claude</td>
+          <td>Composio connectors</td>
+          <td class="num">23/30</td>
+          <td class="num">77%</td>
+          <td class="num">14m</td>
+          <td>Balanced result with broad connector coverage.</td>
+        </tr>
+        <tr>
+          <td class="num">3 observed</td>
+          <td>Micro actual</td>
+          <td>Native tools</td>
+          <td class="num">21/30</td>
+          <td class="num">70%</td>
+          <td class="num">&lt; 5m</td>
+          <td>Fast and strong outside Slack; major gap was Slack DM/private-channel access.</td>
+        </tr>
+        <tr>
+          <td class="num">4 observed</td>
+          <td>Hermes + Supermemory</td>
+          <td>Hermes with Supermemory</td>
+          <td class="num">13/30</td>
+          <td class="num">43%</td>
+          <td class="num">~35m</td>
+          <td>Rate-limited and missed same-day calendar state; hard to one-shot.</td>
+        </tr>
+        <tr>
+          <td class="num">5 observed</td>
+          <td>OpenClaw + Composio + Hindsight</td>
+          <td>Composio CLI plus Hindsight</td>
+          <td class="num">12/30</td>
+          <td class="num">40%</td>
+          <td class="num">not reported</td>
+          <td>Reasoned over a shallow retrieval window and never recovered.</td>
+        </tr>
+      </tbody>
+    </table>
 
-      <div class="table-wrap">
-        <table id="systemsTable">
-          <thead>
-            <tr>
-              <th>Rank</th>
-              <th>System</th>
-              <th>Architecture</th>
-              <th>Score</th>
-              <th>Rate</th>
-              <th>Runtime</th>
-              <th>Primary constraint</th>
-            </tr>
-          </thead>
-          <tbody></tbody>
-        </table>
-      </div>
-    </section>
+    <h2>2. Method</h2>
+    <p>The benchmark contains 30 practical questions. Each question targets a concrete memory dimension and requires verifiable ground truth from live workspace data. The grading labels are:</p>
+    <ul>
+      <li><span class="pass">Pass</span>: answer is correct and supported by the available ground truth.</li>
+      <li><span class="partial">Partial</span>: answer is directionally useful but incomplete, ambiguous, or dependent on an unexhausted retrieval window.</li>
+      <li><span class="fail">Fail</span>: answer is incorrect, missing, or based on insufficient data treated as complete.</li>
+    </ul>
+    <p class="note">The score totals are the adjudicated totals from the source transcript. Some dimension summaries are shorthand diagnostic slices and should be read as qualitative breakdowns, not as independently recomputed totals.</p>
 
-    <section id="analysis">
-      <h2>3. Analysis</h2>
-      <h3>3.1 Retrieval depth explains the ranking better than memory branding</h3>
-      <p>The two memory-augmented stacks, Hermes plus Supermemory and OpenClaw plus Hindsight, did not place near the top. Hermes scored 13/30 after roughly 35 minutes with rate limits and errors; OpenClaw scored 12/30 after reasoning over a shallow retrieval window. The result does not imply that external memory is useless. It implies that memory cannot compensate for incomplete, stale, or flaky retrieval at answer time.</p>
-      <blockquote>On this benchmark, the bottleneck was not remembering. It was reliably fetching the right slice of the user's workspace before reasoning.</blockquote>
+    <h2>3. Dimension-Level Performance</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Dimension</th>
+          <th>Question range</th>
+          <th>Micro actual</th>
+          <th>Claude</th>
+          <th>Codex</th>
+          <th>Hermes + Supermemory</th>
+          <th>OpenClaw + Composio + Hindsight</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Email</td>
+          <td class="num">Q1-Q10</td>
+          <td>6 pass / 3 partial / 1 fail</td>
+          <td>7 pass / 3 partial</td>
+          <td>8 pass / 1 partial / 1 fail</td>
+          <td>6 pass / 2 partial / 2 fail</td>
+          <td>3 pass / 7 fail</td>
+        </tr>
+        <tr>
+          <td>Calendar</td>
+          <td class="num">Q11-Q19</td>
+          <td>9 pass</td>
+          <td>9 pass</td>
+          <td>8 pass / 1 partial</td>
+          <td>2 pass / 7 fail</td>
+          <td>4 pass / 1 partial / 4 fail</td>
+        </tr>
+        <tr>
+          <td>Slack</td>
+          <td class="num">Q20-Q26</td>
+          <td>0 pass / 7 fail</td>
+          <td>7 pass</td>
+          <td>6 pass / 1 partial</td>
+          <td>3 pass / 1 partial / 3 fail</td>
+          <td>4 partial / 3 fail</td>
+        </tr>
+        <tr>
+          <td>Cross-source fusion</td>
+          <td class="num">Q27-Q30</td>
+          <td>4 pass</td>
+          <td>4 pass</td>
+          <td>3 pass / 1 partial</td>
+          <td>3 partial / 1 fail</td>
+          <td>1 partial / 3 fail</td>
+        </tr>
+      </tbody>
+    </table>
 
-      <h3>3.2 Micro's actual gap was Slack access, not core reasoning</h3>
-      <p>Micro's native stack scored 21/30 in less than five minutes while failing the Slack block because it lacked DM/private-channel coverage. The same adjudication projects 28/30 if Micro gets a clean 7/7 Slack block. That would place Micro above Codex while preserving the fastest runtime profile.</p>
+    <h2>4. The 30 Evaluation Questions</h2>
+    <p>This section lists the exact question intent, the memory skill being tested, and the common performance pattern observed across systems.</p>
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Question</th>
+          <th>Tested capability</th>
+          <th>Observed performance pattern</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="num">1</td>
+          <td>What was the subject and sender of the most recent email received today?</td>
+          <td>Email single-hop recall; newest ordering.</td>
+          <td>Most systems could identify the Product Hunt automation email from Team Micro. Shallow windows still performed acceptably because the target was recent.</td>
+        </tr>
+        <tr>
+          <td class="num">2</td>
+          <td>Who sent the last invoice or payment-confirmation email, and for what amount?</td>
+          <td>Email search plus semantic distinction between invoice, confirmation, and reminder.</td>
+          <td>Fireflies.ai / Stripe at $5.00 was the key target. Some systems over- or under-interpreted payment reminders as confirmations.</td>
+        </tr>
+        <tr>
+          <td class="num">3</td>
+          <td>What is the most recent email actually sent by the user, and who was it sent to?</td>
+          <td>Sent-mail retrieval and exclusion of system-generated mail.</td>
+          <td>The correct target was the May 15 "URGENT: Pigeons Are Stealing Our Bandwidth" email to dev@micro.so. Systems with poor sent-mail filtering produced partial answers.</td>
+        </tr>
+        <tr>
+          <td class="num">4</td>
+          <td>Find the oldest unread email still in the inbox.</td>
+          <td>Pagination-to-completion and oldest-item ordering.</td>
+          <td>This was a major separator. Codex paginated deeply. Other systems stopped early and reported only the oldest item in their visible window.</td>
+        </tr>
+        <tr>
+          <td class="num">5</td>
+          <td>How many unread emails are currently in the inbox?</td>
+          <td>Exact count retrieval.</td>
+          <td>Exact counts were difficult without a count endpoint. Several systems treated page size or sample size as the total.</td>
+        </tr>
+        <tr>
+          <td class="num">6</td>
+          <td>Summarize the back-and-forth in the most recent email thread with more than two messages.</td>
+          <td>Thread reading and multi-message synthesis.</td>
+          <td>Systems with full thread retrieval passed or partially passed. Shallow systems could only infer that a thread existed.</td>
+        </tr>
+        <tr>
+          <td class="num">7</td>
+          <td>Across all emails this week, who is the user waiting on a reply from?</td>
+          <td>Conversation-state analysis and negative detection.</td>
+          <td>Strong systems recognized that there were no user-sent emails this week or identified the open support thread nuance.</td>
+        </tr>
+        <tr>
+          <td class="num">8</td>
+          <td>Which sender emailed the user the most over the last 7 days?</td>
+          <td>Sender aggregation over a time window.</td>
+          <td>Team Micro and AWS Notifications were the main contenders. Differences came from sample windows and whether the system paginated.</td>
+        </tr>
+        <tr>
+          <td class="num">9</td>
+          <td>Did the user ever reply to the last email from a recurring contact?</td>
+          <td>Recurring-contact selection and reply-state detection.</td>
+          <td>This exposed whether a system could distinguish a real recurring human contact from automation senders.</td>
+        </tr>
+        <tr>
+          <td class="num">10</td>
+          <td>List every distinct automated or system-notification topic received today.</td>
+          <td>Topic clustering across many emails.</td>
+          <td>Strong systems found 10-12 categories. Shallow systems listed only the Product Hunt messages they saw.</td>
+        </tr>
+        <tr>
+          <td class="num">11</td>
+          <td>What is the next meeting, when does it start, and who organized it?</td>
+          <td>Calendar recall and time anchoring.</td>
+          <td>The key target was the same-day 9 PM standup organized by Brett. Hermes missed it and selected a future PR reviews block.</td>
+        </tr>
+        <tr>
+          <td class="num">12</td>
+          <td>Who are the attendees on the next standup?</td>
+          <td>Calendar attendee extraction.</td>
+          <td>Systems that found the standup generally answered correctly. Missing the standup caused a hard failure.</td>
+        </tr>
+        <tr>
+          <td class="num">13</td>
+          <td>What meetings happened earlier today, and which had no summary or recording?</td>
+          <td>Past-event filtering and metadata inspection.</td>
+          <td>The PR reviews block at 00:45-01:45 was the key earlier event. Several systems missed it.</td>
+        </tr>
+        <tr>
+          <td class="num">14</td>
+          <td>What was the title of the last meeting attended that was organized by someone else?</td>
+          <td>Organizer filtering over past meetings.</td>
+          <td>The previous standup organized by Brett was the key answer. Systems that only saw self-organized blocks failed.</td>
+        </tr>
+        <tr>
+          <td class="num">15</td>
+          <td>Are there meetings with a video link in the next 24 hours?</td>
+          <td>Meeting-link detection.</td>
+          <td>The standup had a Google Meet link. Missing the standup caused the wrong conclusion.</td>
+        </tr>
+        <tr>
+          <td class="num">16</td>
+          <td>How much total meeting time is scheduled today?</td>
+          <td>Duration summation.</td>
+          <td>The adjudicated target was 1.5 hours. Errors came from missing events or inflating standup duration.</td>
+        </tr>
+        <tr>
+          <td class="num">17</td>
+          <td>What is the gap between the last meeting that ended and the next meeting that starts?</td>
+          <td>Temporal arithmetic.</td>
+          <td>The correct gap was 19 hours 15 minutes. Systems without the same-day anchor produced confused or missing answers.</td>
+        </tr>
+        <tr>
+          <td class="num">18</td>
+          <td>Which recurring meeting appears most often, and who usually organizes it?</td>
+          <td>Recurrence detection.</td>
+          <td>There was nuance between PR reviews overall and standup as the recurring team meeting. This produced partials.</td>
+        </tr>
+        <tr>
+          <td class="num">19</td>
+          <td>Are there scheduling conflicts this week?</td>
+          <td>Overlap detection.</td>
+          <td>Most systems correctly found no direct overlaps.</td>
+        </tr>
+        <tr>
+          <td class="num">20</td>
+          <td>What was the last Slack message sent, and in which channel or DM?</td>
+          <td>Slack latest-message retrieval.</td>
+          <td>Systems with DM access found Dev DMs; public-only systems saw public channel messages instead.</td>
+        </tr>
+        <tr>
+          <td class="num">21</td>
+          <td>What is the most recent thread where the user was mentioned?</td>
+          <td>Mention search and bot-noise filtering.</td>
+          <td>Strong answers distinguished automated deploy-bot mentions from human mentions by Brett.</td>
+        </tr>
+        <tr>
+          <td class="num">22</td>
+          <td>Which Slack channel or conversation has been most active recently?</td>
+          <td>Slack activity aggregation.</td>
+          <td>DM with Dev was important by volume. Public-only systems leaned toward #data-and-ai or #alerts-eng.</td>
+        </tr>
+        <tr>
+          <td class="num">23</td>
+          <td>Summarize the latest message in the most active Slack conversation.</td>
+          <td>Short-context Slack synthesis.</td>
+          <td>Good answers captured the X/OAuth preview-test thread. Shallow answers gave vague short-message summaries.</td>
+        </tr>
+        <tr>
+          <td class="num">24</td>
+          <td>Is any Slack message waiting on a response from the user?</td>
+          <td>Open-loop detection.</td>
+          <td>Brett's benchmark request and bug threads were the key open asks. Public-only retrieval or shallow context missed them.</td>
+        </tr>
+        <tr>
+          <td class="num">25</td>
+          <td>Across Slack, what is the most recent decision or action item directed at the user?</td>
+          <td>Action-item extraction.</td>
+          <td>The strongest answer identified Brett assigning the benchmark run across systems.</td>
+        </tr>
+        <tr>
+          <td class="num">26</td>
+          <td>Who was the most recent DM with, and what was the gist?</td>
+          <td>DM access and summarization.</td>
+          <td>Systems with DM access found Dev and the X/OAuth verification context. Public-only systems failed.</td>
+        </tr>
+        <tr>
+          <td class="num">27</td>
+          <td>For the next meeting, is there any related email or Slack discussion to review?</td>
+          <td>Meeting-centered cross-source retrieval.</td>
+          <td>Correct answers linked the standup to prior notes and Brett's active Slack asks. Wrong calendar anchoring caused failures.</td>
+        </tr>
+        <tr>
+          <td class="num">28</td>
+          <td>Did anyone email and Slack about the same topic in the last week?</td>
+          <td>Cross-channel topic matching.</td>
+          <td>Memory/agent eval and standup topics were plausible links. Systems often picked email-only Product Hunt topics.</td>
+        </tr>
+        <tr>
+          <td class="num">29</td>
+          <td>Across email, calendar, and Slack, what are the top three things needing attention today?</td>
+          <td>Priority synthesis.</td>
+          <td>Strong answers included standup prep, Brett's benchmark/action items, X/OAuth verification, and API/automation issues.</td>
+        </tr>
+        <tr>
+          <td class="num">30</td>
+          <td>Is there a calendar meeting that was scheduled or confirmed via email or Slack? Link the two.</td>
+          <td>Entity linking across calendar and communications.</td>
+          <td>The 1-1 with Naveen and its email invitation were the clean target. Several systems missed it.</td>
+        </tr>
+      </tbody>
+    </table>
 
-      <h3>3.3 Codex won through exhaustive retrieval, with verification caveats</h3>
-      <p>Codex benefited from code execution and deeper pagination, surfacing claims such as a 30,254-message unread count and an oldest unread email from November 2025. The transcript also flags two Codex claims as requiring caution because they conflicted with another native-tool recheck. Its lead is therefore best interpreted as a retrieval-depth advantage rather than a clean reasoning-only win.</p>
+    <h2>5. System-by-System Notes</h2>
 
-      <h3>3.4 Calendar errors are catastrophic for cross-source tasks</h3>
-      <p>Hermes missed the same-day standup, inferred that there were no meetings that day, and then cascaded that error into meeting-prep, attention, and cross-source questions. Calendar is a small block numerically, but it anchors the temporal frame for the whole benchmark.</p>
-    </section>
+    <h3>Codex: 26/30, 22m 20s</h3>
+    <p>Codex produced the best observed score. Its advantage came from code execution and deeper pagination, especially on exact email-count and oldest-unread tasks. The main weakness was speed. The source transcript also flags two Codex claims for follow-up verification: the 30,254 unread count and the AWS top-sender claim, both of which conflicted with another native-tool recheck.</p>
 
-    <section id="failures">
-      <h2>4. Failure Taxonomy</h2>
-      <div class="chart-grid">
-        <figure>
-          <svg id="failureChart" viewBox="0 0 720 430" role="img" aria-label="Failure taxonomy chart"></svg>
-          <figcaption>Figure 5. Qualitative failure taxonomy derived from the transcript's adjudication notes.</figcaption>
-        </figure>
-        <figure>
-          <svg id="projectionChart" viewBox="0 0 720 430" role="img" aria-label="Micro projected gain chart"></svg>
-          <figcaption>Figure 6. Micro actual versus projected score after closing the Slack retrieval gap.</figcaption>
-        </figure>
-      </div>
-      <div class="two-col">
-        <div>
-          <h3>Observed failure modes</h3>
-          <ul>
-            <li><strong>Pagination truncation:</strong> systems answered exact-count or oldest-item questions from the first page.</li>
-            <li><strong>Connector shallowness:</strong> OpenClaw saw a tiny email window and treated it as the inbox.</li>
-            <li><strong>DM/private-channel blindness:</strong> Micro and Hermes missed Slack DM context.</li>
-            <li><strong>Temporal anchoring errors:</strong> Hermes selected a future PR review instead of the same-day standup.</li>
-            <li><strong>Ambiguous negative detection:</strong> payment reminders, no-reply states, and bot mentions required careful interpretation.</li>
-          </ul>
-        </div>
-        <div>
-          <h3>Design implications</h3>
-          <ul>
-            <li>Expose total counts and pagination cursors as first-class model-visible evidence.</li>
-            <li>Separate public Slack search from DM/private-channel search in tool contracts.</li>
-            <li>Require date-window assertions before answering "today", "next", and "this week".</li>
-            <li>Report retrieval coverage with each answer, especially for exact-count tasks.</li>
-            <li>Prefer native domain APIs when they can provide complete state faster than generic connectors.</li>
-          </ul>
-        </div>
-      </div>
-    </section>
+    <h3>Claude: 23/30, 14m</h3>
+    <p>Claude was the best balanced connector-based run. It performed well on Slack and cross-source reasoning and handled negative-detection questions carefully. It was slower than Micro and did not match Codex's exhaustive retrieval depth.</p>
 
-    <section id="discussion">
-      <h2>5. Discussion</h2>
-      <p>The benchmark rewards complete state acquisition more than isolated semantic memory. A vector or personal memory layer can help recall prior facts, but the evaluated questions are mostly about current operational truth: unread counts, latest sent mail, upcoming meetings, Slack DMs, and cross-channel open loops. Those facts decay quickly and require authoritative connectors.</p>
-      <p>Native retrieval also matters for latency. Micro's sub-five-minute run suggests that domain-specific tools can provide a strong accuracy-speed tradeoff even when raw coverage is incomplete. Generic connector stacks can win when they retrieve deeply, as Codex did, but can fail badly when they retrieve shallowly, as OpenClaw did.</p>
-      <p>For production agents, the relevant metric is not only answer accuracy. It is answer accuracy per minute under rate limits, with explicit coverage reporting. A slower system that eventually paginates to ground truth may be valuable for audits; a faster native system may be better for everyday assistant workflows if it honestly reports missing scopes.</p>
-    </section>
+    <h3>Micro actual: 21/30, less than 5m</h3>
+    <p>Micro was the fastest observed system. The main gap was not general reasoning but missing Slack DM/private-channel access. Calendar and cross-source performance were strong in the source adjudication, and the system was explicit about retrieval limits such as pagination.</p>
 
-    <section id="conclusion">
-      <h2>6. Conclusion</h2>
-      <p>This field evaluation supports a practical conclusion: memory-agent quality is gated by retrieval completeness. The most capable systems were those that fetched enough live workspace state before synthesizing. The weakest systems were not necessarily weaker reasoners; they were operating on incomplete or misaligned context.</p>
-      <p>The strongest product direction is therefore straightforward: close Slack DM/private-channel access, enforce pagination-to-completion for exact queries, and make coverage evidence visible in every answer. Under that roadmap, the native Micro stack moves from a fast third-place result to the projected top of the table.</p>
-    </section>
+    <h3>Micro projected: 28/30, less than 5m</h3>
+    <p>The projection asks where Micro would rank if it scored 7/7 on Slack. Under that single change, Micro moves to 28/30, ahead of Codex, while retaining the fastest runtime profile. This supports the claim that the primary Micro bottleneck is a connector coverage gap.</p>
 
-    <section id="appendix">
-      <h2>Appendix: Source Data Summary</h2>
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>System</th>
-              <th>Email</th>
-              <th>Calendar</th>
-              <th>Slack</th>
-              <th>Cross-source</th>
-            </tr>
-          </thead>
-          <tbody id="dimensionTable"></tbody>
-        </table>
-      </div>
-      <p class="footnote">This page is intentionally unlisted. It includes `noindex` directives and is not linked from the site root. Anyone with the URL can still view it.</p>
-    </section>
+    <h3>Hermes + Supermemory: 13/30, roughly 35m</h3>
+    <p>Hermes with Supermemory was rate-limited and difficult to run in one shot. It performed reasonably on some email questions, but missed the same-day standup and collapsed on calendar-dependent questions. This made it a clear example of a memory layer failing to compensate for unreliable current-state retrieval.</p>
+
+    <h3>OpenClaw + Composio + Hindsight: 12/30</h3>
+    <p>OpenClaw had broad theoretical connectors but retrieved too shallowly. It appeared to reason over a tiny email window, reported two unread emails where the real backlog was far larger, and missed several Slack and cross-source links. Its failure mode was not lack of reasoning but lack of data depth.</p>
+
+    <h2>6. Main Findings</h2>
+    <ol>
+      <li><strong>Retrieval completeness is the dominant variable.</strong> The strongest systems fetched enough live workspace state before answering.</li>
+      <li><strong>Memory layers are not a substitute for current-state access.</strong> Supermemory and Hindsight did not help when the system missed meetings, DMs, or pagination.</li>
+      <li><strong>Slack access is decisive.</strong> DM/private-channel coverage changes the ranking substantially.</li>
+      <li><strong>Pagination is a first-class requirement.</strong> Exact counts, oldest items, and sender-frequency questions cannot be answered from one page.</li>
+      <li><strong>Latency matters.</strong> Codex scored highest observed accuracy but took more than four times as long as Micro.</li>
+    </ol>
+
+    <h2>7. Recommended Product Changes</h2>
+    <ol>
+      <li>Add complete Slack DM/private-channel retrieval where permissions allow it.</li>
+      <li>Expose count endpoints or page-to-completion helpers for exact email questions.</li>
+      <li>Make retrieval coverage visible in every answer: pages read, total available, and whether `hasMore` remained true.</li>
+      <li>Require explicit date-window anchoring before answering "today", "next", "earlier", or "this week".</li>
+      <li>Separate bot mentions from human mentions in Slack tools.</li>
+      <li>Prefer native domain APIs for fast, complete state retrieval over generic connector abstractions when the use case is operational memory.</li>
+    </ol>
+
+    <h2>8. Conclusion</h2>
+    <p>The benchmark supports a simple conclusion: the best memory agents are not the ones with the fanciest memory layer; they are the ones that reliably retrieve complete, current, source-grounded state before reasoning. In this test, code execution won by paginating deeply, Claude performed well through broad connectors, Micro was fastest but Slack-capped, and the memory-augmented stacks underperformed because retrieval was incomplete or flaky.</p>
+    <p class="note small">This page is intentionally unlisted. It is public to anyone with the URL, but it is not linked from the root page and includes crawler blocking directives.</p>
   </main>
-
-  <script>
-    const systems = [
-      {
-        rank: 1,
-        name: "Micro projected",
-        architecture: "Native tools with complete Slack",
-        score: 28,
-        rate: 93,
-        runtime: 5,
-        runtimeLabel: "< 5m",
-        constraint: "Projection: assumes 7/7 Slack",
-        color: "#2f6f4e"
-      },
-      {
-        rank: 2,
-        name: "Codex",
-        architecture: "Code execution",
-        score: 26,
-        rate: 87,
-        runtime: 22.33,
-        runtimeLabel: "22m 20s",
-        constraint: "Slow, two claims flagged for verification",
-        color: "#284b63"
-      },
-      {
-        rank: 3,
-        name: "Claude",
-        architecture: "Composio connectors",
-        score: 23,
-        rate: 77,
-        runtime: 14,
-        runtimeLabel: "14m",
-        constraint: "Balanced but slower than native",
-        color: "#8a5a44"
-      },
-      {
-        rank: 4,
-        name: "Micro actual",
-        architecture: "Native tools",
-        score: 21,
-        rate: 70,
-        runtime: 5,
-        runtimeLabel: "< 5m",
-        constraint: "No Slack DM/private-channel access",
-        color: "#6a994e"
-      },
-      {
-        rank: 5,
-        name: "Hermes + Supermemory",
-        architecture: "Hermes plus Supermemory",
-        score: 13,
-        rate: 43,
-        runtime: 35,
-        runtimeLabel: "~35m",
-        constraint: "Rate limits; missed same-day calendar state",
-        color: "#bc6c25"
-      },
-      {
-        rank: 6,
-        name: "OpenClaw + Composio + Hindsight",
-        architecture: "Composio CLI plus Hindsight",
-        score: 12,
-        rate: 40,
-        runtime: null,
-        runtimeLabel: "not reported",
-        constraint: "Shallow retrieval window",
-        color: "#9b2c2c"
-      }
-    ];
-
-    const dimensions = [
-      {
-        system: "Micro actual",
-        email: [6, 3, 1],
-        calendar: [9, 0, 0],
-        slack: [0, 0, 7],
-        cross: [4, 0, 0]
-      },
-      {
-        system: "Claude",
-        email: [7, 3, 0],
-        calendar: [9, 0, 0],
-        slack: [7, 0, 0],
-        cross: [4, 0, 0]
-      },
-      {
-        system: "Codex",
-        email: [8, 1, 1],
-        calendar: [8, 1, 0],
-        slack: [6, 1, 0],
-        cross: [3, 1, 0]
-      },
-      {
-        system: "Hermes + Supermemory",
-        email: [6, 2, 2],
-        calendar: [2, 0, 7],
-        slack: [3, 1, 3],
-        cross: [0, 3, 1]
-      },
-      {
-        system: "OpenClaw + Composio + Hindsight",
-        email: [3, 0, 7],
-        calendar: [4, 1, 4],
-        slack: [0, 4, 3],
-        cross: [0, 1, 3]
-      }
-    ];
-
-    const failures = [
-      ["Pagination / count incompleteness", 9],
-      ["Slack DM or private-channel gap", 8],
-      ["Calendar temporal anchoring", 7],
-      ["Shallow connector window", 6],
-      ["Conversation-state ambiguity", 5],
-      ["Rate limits / flaky execution", 4]
-    ];
-
-    const svgNS = "http://www.w3.org/2000/svg";
-
-    function el(name, attrs = {}, text) {
-      const node = document.createElementNS(svgNS, name);
-      Object.entries(attrs).forEach(([key, value]) => node.setAttribute(key, value));
-      if (text !== undefined) node.textContent = text;
-      return node;
-    }
-
-    function cssVar(name) {
-      return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
-    }
-
-    function renderScoreChart() {
-      const svg = document.getElementById("scoreChart");
-      const width = 720;
-      const max = 30;
-      const left = 188;
-      const top = 52;
-      const barH = 34;
-      const gap = 24;
-      svg.append(el("text", { x: 0, y: 22, fill: cssVar("--ink"), "font-size": 21, "font-weight": 800 }, "Overall score"));
-      systems.forEach((system, index) => {
-        const y = top + index * (barH + gap);
-        const barW = (system.score / max) * 430;
-        svg.append(el("text", { x: 0, y: y + 23, fill: cssVar("--ink"), "font-size": 16, "font-weight": 700 }, system.name));
-        svg.append(el("rect", { x: left, y, width: 430, height: barH, rx: 12, fill: cssVar("--grid") }));
-        svg.append(el("rect", { x: left, y, width: barW, height: barH, rx: 12, fill: system.color }));
-        svg.append(el("text", { x: left + barW + 12, y: y + 23, fill: cssVar("--ink"), "font-size": 15, "font-weight": 700 }, `${system.score}/30`));
-        svg.append(el("text", { x: 650, y: y + 23, fill: cssVar("--muted"), "font-size": 14, "text-anchor": "end" }, `${system.rate}%`));
-      });
-    }
-
-    function renderRuntimeChart() {
-      const svg = document.getElementById("runtimeChart");
-      const data = systems.filter(system => system.runtime !== null);
-      const max = 35;
-      const left = 188;
-      const top = 52;
-      const barH = 34;
-      const gap = 28;
-      svg.append(el("text", { x: 0, y: 22, fill: cssVar("--ink"), "font-size": 21, "font-weight": 800 }, "Runtime"));
-      data.forEach((system, index) => {
-        const y = top + index * (barH + gap);
-        const barW = (system.runtime / max) * 430;
-        svg.append(el("text", { x: 0, y: y + 23, fill: cssVar("--ink"), "font-size": 16, "font-weight": 700 }, system.name));
-        svg.append(el("rect", { x: left, y, width: 430, height: barH, rx: 12, fill: cssVar("--grid") }));
-        svg.append(el("rect", { x: left, y, width: barW, height: barH, rx: 12, fill: system.color }));
-        svg.append(el("text", { x: left + barW + 12, y: y + 23, fill: cssVar("--ink"), "font-size": 15, "font-weight": 700 }, system.runtimeLabel));
-      });
-      svg.append(el("text", { x: 0, y: 398, fill: cssVar("--muted"), "font-size": 13 }, "OpenClaw runtime was not reported in the source transcript."));
-    }
-
-    function renderFrontierChart() {
-      const svg = document.getElementById("frontierChart");
-      const plot = { x: 92, y: 48, w: 800, h: 350 };
-      const data = systems.filter(system => system.runtime !== null);
-      svg.append(el("text", { x: 0, y: 22, fill: cssVar("--ink"), "font-size": 22, "font-weight": 800 }, "Accuracy-speed frontier"));
-      svg.append(el("line", { x1: plot.x, y1: plot.y + plot.h, x2: plot.x + plot.w, y2: plot.y + plot.h, stroke: cssVar("--line"), "stroke-width": 2 }));
-      svg.append(el("line", { x1: plot.x, y1: plot.y, x2: plot.x, y2: plot.y + plot.h, stroke: cssVar("--line"), "stroke-width": 2 }));
-      [0, 10, 20, 30, 40].forEach(tick => {
-        const x = plot.x + (tick / 40) * plot.w;
-        svg.append(el("line", { x1: x, y1: plot.y, x2: x, y2: plot.y + plot.h, stroke: cssVar("--grid"), "stroke-width": 1 }));
-        svg.append(el("text", { x, y: plot.y + plot.h + 28, fill: cssVar("--muted"), "font-size": 13, "text-anchor": "middle" }, tick));
-      });
-      [40, 60, 80, 100].forEach(tick => {
-        const y = plot.y + plot.h - ((tick - 30) / 70) * plot.h;
-        svg.append(el("line", { x1: plot.x, y1: y, x2: plot.x + plot.w, y2: y, stroke: cssVar("--grid"), "stroke-width": 1 }));
-        svg.append(el("text", { x: plot.x - 14, y: y + 5, fill: cssVar("--muted"), "font-size": 13, "text-anchor": "end" }, `${tick}%`));
-      });
-      data.forEach(system => {
-        const x = plot.x + (system.runtime / 40) * plot.w;
-        const y = plot.y + plot.h - ((system.rate - 30) / 70) * plot.h;
-        svg.append(el("circle", { cx: x, cy: y, r: 10, fill: system.color, stroke: cssVar("--paper"), "stroke-width": 3 }));
-        svg.append(el("text", { x: x + 14, y: y - 10, fill: cssVar("--ink"), "font-size": 13, "font-weight": 700 }, system.name));
-        svg.append(el("text", { x: x + 14, y: y + 8, fill: cssVar("--muted"), "font-size": 12 }, `${system.score}/30, ${system.runtimeLabel}`));
-      });
-      svg.append(el("text", { x: plot.x + plot.w / 2, y: 472, fill: cssVar("--muted"), "font-size": 14, "text-anchor": "middle" }, "Runtime in minutes, lower is better"));
-      svg.append(el("text", { x: 18, y: 225, fill: cssVar("--muted"), "font-size": 14, transform: "rotate(-90 18 225)", "text-anchor": "middle" }, "Accuracy"));
-    }
-
-    function renderDimensionChart() {
-      const svg = document.getElementById("dimensionChart");
-      const labels = ["Email", "Calendar", "Slack", "Cross"];
-      const keys = ["email", "calendar", "slack", "cross"];
-      const x0 = 230;
-      const y0 = 72;
-      const cellW = 180;
-      const rowH = 78;
-      svg.append(el("text", { x: 0, y: 24, fill: cssVar("--ink"), "font-size": 22, "font-weight": 800 }, "Dimension profile"));
-      labels.forEach((label, i) => {
-        svg.append(el("text", { x: x0 + i * cellW + cellW / 2, y: 50, fill: cssVar("--accent"), "font-size": 14, "font-weight": 800, "text-anchor": "middle" }, label));
-      });
-      dimensions.forEach((row, rowIndex) => {
-        const y = y0 + rowIndex * rowH;
-        svg.append(el("text", { x: 0, y: y + 44, fill: cssVar("--ink"), "font-size": 15, "font-weight": 700 }, row.system));
-        keys.forEach((key, colIndex) => {
-          const [pass, partial, fail] = row[key];
-          const total = pass + partial + fail;
-          const x = x0 + colIndex * cellW;
-          const w = 138;
-          let offset = 0;
-          const parts = [
-            [pass, cssVar("--pass")],
-            [partial, cssVar("--partial")],
-            [fail, cssVar("--fail")]
-          ];
-          svg.append(el("rect", { x, y: y + 16, width: w, height: 30, rx: 10, fill: cssVar("--grid") }));
-          parts.forEach(([value, color], partIndex) => {
-            const partW = total ? (value / total) * w : 0;
-            if (partW > 0) {
-              svg.append(el("rect", { x: x + offset, y: y + 16, width: partW, height: 30, rx: partIndex === 0 ? 10 : 0, fill: color }));
-            }
-            offset += partW;
-          });
-          svg.append(el("text", { x: x + w / 2, y: y + 67, fill: cssVar("--muted"), "font-size": 12, "text-anchor": "middle" }, `${pass}P / ${partial}Part / ${fail}F`));
-        });
-      });
-      const legendY = 508;
-      [["Pass", cssVar("--pass")], ["Partial", cssVar("--partial")], ["Fail", cssVar("--fail")]].forEach(([label, color], index) => {
-        const x = 230 + index * 120;
-        svg.append(el("rect", { x, y: legendY - 12, width: 18, height: 18, rx: 5, fill: color }));
-        svg.append(el("text", { x: x + 26, y: legendY + 2, fill: cssVar("--muted"), "font-size": 13 }, label));
-      });
-    }
-
-    function renderFailureChart() {
-      const svg = document.getElementById("failureChart");
-      const max = Math.max(...failures.map(item => item[1]));
-      const left = 230;
-      const top = 50;
-      const barH = 27;
-      const gap = 26;
-      svg.append(el("text", { x: 0, y: 22, fill: cssVar("--ink"), "font-size": 21, "font-weight": 800 }, "Failure themes"));
-      failures.forEach(([label, value], index) => {
-        const y = top + index * (barH + gap);
-        const barW = (value / max) * 360;
-        svg.append(el("text", { x: 0, y: y + 20, fill: cssVar("--ink"), "font-size": 14, "font-weight": 700 }, label));
-        svg.append(el("rect", { x: left, y, width: 360, height: barH, rx: 10, fill: cssVar("--grid") }));
-        svg.append(el("rect", { x: left, y, width: barW, height: barH, rx: 10, fill: cssVar("--fail") }));
-        svg.append(el("text", { x: left + barW + 10, y: y + 20, fill: cssVar("--muted"), "font-size": 13 }, String(value)));
-      });
-    }
-
-    function renderProjectionChart() {
-      const svg = document.getElementById("projectionChart");
-      const actual = 21;
-      const projected = 28;
-      const x = 104;
-      const y = 70;
-      const h = 250;
-      const scale = h / 30;
-      svg.append(el("text", { x: 0, y: 22, fill: cssVar("--ink"), "font-size": 21, "font-weight": 800 }, "Micro Slack-gap projection"));
-      [
-        ["Actual", actual, cssVar("--accent-2")],
-        ["Projected", projected, cssVar("--pass")]
-      ].forEach(([label, value, color], index) => {
-        const barX = x + index * 210;
-        const barH = value * scale;
-        svg.append(el("rect", { x: barX, y: y + h - barH, width: 110, height: barH, rx: 16, fill: color }));
-        svg.append(el("text", { x: barX + 55, y: y + h - barH - 12, fill: cssVar("--ink"), "font-size": 20, "font-weight": 800, "text-anchor": "middle" }, `${value}/30`));
-        svg.append(el("text", { x: barX + 55, y: y + h + 34, fill: cssVar("--muted"), "font-size": 15, "font-weight": 700, "text-anchor": "middle" }, label));
-      });
-      svg.append(el("line", { x1: x - 30, y1: y + h, x2: x + 360, y2: y + h, stroke: cssVar("--line"), "stroke-width": 2 }));
-      svg.append(el("text", { x: 0, y: 390, fill: cssVar("--muted"), "font-size": 14 }, "Delta: +7 points from completing Slack DM/private-channel retrieval."));
-    }
-
-    function renderTables() {
-      const tbody = document.querySelector("#systemsTable tbody");
-      systems.forEach(system => {
-        const row = document.createElement("tr");
-        row.innerHTML = `
-          <td class="num">${system.rank}</td>
-          <td><strong>${system.name}</strong></td>
-          <td>${system.architecture}</td>
-          <td class="num"><strong>${system.score}/30</strong></td>
-          <td class="num">${system.rate}%</td>
-          <td class="num">${system.runtimeLabel}</td>
-          <td>${system.constraint}</td>
-        `;
-        tbody.appendChild(row);
-      });
-
-      const dimensionTbody = document.getElementById("dimensionTable");
-      dimensions.forEach(rowData => {
-        const row = document.createElement("tr");
-        const format = ([pass, partial, fail]) => `
-          <span class="pill pass">${pass} pass</span>
-          <span class="pill partial">${partial} partial</span>
-          <span class="pill fail">${fail} fail</span>
-        `;
-        row.innerHTML = `
-          <td><strong>${rowData.system}</strong></td>
-          <td>${format(rowData.email)}</td>
-          <td>${format(rowData.calendar)}</td>
-          <td>${format(rowData.slack)}</td>
-          <td>${format(rowData.cross)}</td>
-        `;
-        dimensionTbody.appendChild(row);
-      });
-    }
-
-    renderScoreChart();
-    renderRuntimeChart();
-    renderFrontierChart();
-    renderDimensionChart();
-    renderFailureChart();
-    renderProjectionChart();
-    renderTables();
-  </script>
 </body>
 </html>
